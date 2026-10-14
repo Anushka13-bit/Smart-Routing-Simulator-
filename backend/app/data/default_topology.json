@@ -1,0 +1,132 @@
+{
+  "routers": [
+    {
+      "id": "R1",
+      "label": "Core Router R1 (Gateway)",
+      "ipAddress": "192.168.1.1",
+      "loopback": "10.0.0.1/32",
+      "status": "active",
+      "description": "Autonomous System border gateway & ingress aggregation node.",
+      "interfaces": [
+        { "name": "Gig0/0", "connectedTo": "R2", "status": "up", "ip": "10.1.2.1/30" },
+        { "name": "Gig0/1", "connectedTo": "R3", "status": "up", "ip": "10.1.3.1/30" },
+        { "name": "Gig0/2", "connectedTo": "R4", "status": "up", "ip": "10.1.4.1/30" }
+      ],
+      "cpuUsage": 28,
+      "memoryUsage": 42
+    },
+    {
+      "id": "R2",
+      "label": "Distribution Router R2",
+      "ipAddress": "192.168.2.1",
+      "loopback": "10.0.0.2/32",
+      "status": "active",
+      "description": "High-speed transit node handling north-central campus traffic.",
+      "interfaces": [
+        { "name": "Gig0/0", "connectedTo": "R1", "status": "up", "ip": "10.1.2.2/30" },
+        { "name": "Gig0/1", "connectedTo": "R3", "status": "up", "ip": "10.2.3.1/30" }
+      ],
+      "cpuUsage": 19,
+      "memoryUsage": 35
+    },
+    {
+      "id": "R3",
+      "label": "Backbone Switch/Router R3",
+      "ipAddress": "192.168.3.1",
+      "loopback": "10.0.0.3/32",
+      "status": "active",
+      "description": "Central multi-layer backbone routing engine with low latency links.",
+      "interfaces": [
+        { "name": "Gig0/0", "connectedTo": "R1", "status": "up", "ip": "10.1.3.2/30" },
+        { "name": "Gig0/1", "connectedTo": "R2", "status": "up", "ip": "10.2.3.2/30" },
+        { "name": "Gig0/2", "connectedTo": "R5", "status": "up", "ip": "10.3.5.1/30" }
+      ],
+      "cpuUsage": 34,
+      "memoryUsage": 51
+    },
+    {
+      "id": "R4",
+      "label": "Secondary Transit Router R4",
+      "ipAddress": "192.168.4.1",
+      "loopback": "10.0.0.4/32",
+      "status": "active",
+      "description": "Dedicated redundant bypass link for failover resilience.",
+      "interfaces": [
+        { "name": "Gig0/0", "connectedTo": "R1", "status": "up", "ip": "10.1.4.2/30" },
+        { "name": "Gig0/1", "connectedTo": "R5", "status": "up", "ip": "10.4.5.1/30" }
+      ],
+      "cpuUsage": 14,
+      "memoryUsage": 26
+    },
+    {
+      "id": "R5",
+      "label": "Egress Router R5 (Destination)",
+      "ipAddress": "192.168.5.1",
+      "loopback": "10.0.0.5/32",
+      "status": "active",
+      "description": "Perimeter gateway terminating public WAN & datacenter interconnect.",
+      "interfaces": [
+        { "name": "Gig0/0", "connectedTo": "R3", "status": "up", "ip": "10.3.5.2/30" },
+        { "name": "Gig0/1", "connectedTo": "R4", "status": "up", "ip": "10.4.5.2/30" }
+      ],
+      "cpuUsage": 31,
+      "memoryUsage": 48
+    }
+  ],
+  "links": [
+    {
+      "id": "R1-R2",
+      "source": "R1",
+      "target": "R2",
+      "bandwidthMbps": 1000,
+      "delayMs": 5,
+      "congestionPercent": 18,
+      "status": "active"
+    },
+    {
+      "id": "R2-R3",
+      "source": "R2",
+      "target": "R3",
+      "bandwidthMbps": 1000,
+      "delayMs": 3,
+      "congestionPercent": 12,
+      "status": "active"
+    },
+    {
+      "id": "R1-R3",
+      "source": "R1",
+      "target": "R3",
+      "bandwidthMbps": 1000,
+      "delayMs": 4,
+      "congestionPercent": 25,
+      "status": "active"
+    },
+    {
+      "id": "R1-R4",
+      "source": "R1",
+      "target": "R4",
+      "bandwidthMbps": 500,
+      "delayMs": 10,
+      "congestionPercent": 8,
+      "status": "active"
+    },
+    {
+      "id": "R4-R5",
+      "source": "R4",
+      "target": "R5",
+      "bandwidthMbps": 500,
+      "delayMs": 6,
+      "congestionPercent": 10,
+      "status": "active"
+    },
+    {
+      "id": "R3-R5",
+      "source": "R3",
+      "target": "R5",
+      "bandwidthMbps": 1000,
+      "delayMs": 8,
+      "congestionPercent": 22,
+      "status": "active"
+    }
+  ]
+}
