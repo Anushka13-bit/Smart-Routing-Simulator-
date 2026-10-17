@@ -57,7 +57,7 @@ export const AlgorithmComparisonView: React.FC<AlgorithmComparisonViewProps> = (
     rounds: res.convergenceRounds,
   }));
 
-  const chartColors = ['#06B6D4', '#3B82F6', '#8B5CF6', '#10B981'];
+  const chartColors = ['#06B6D4', '#3B82F6', '#8B5CF6', '#10B981', '#F59E0B'];
 
   return (
     <div className="space-y-6">
@@ -70,7 +70,7 @@ export const AlgorithmComparisonView: React.FC<AlgorithmComparisonViewProps> = (
               <h2 className="text-xl font-bold text-white">Multi-Algorithm Benchmark & Comparison</h2>
             </div>
             <p className="text-xs text-slate-400 mt-1">
-              Simultaneous evaluation of Dijkstra, Bellman-Ford, Distributed Distance Vector, and OSPF Link-State on current topology.
+              Simultaneous evaluation of Dijkstra, Bellman-Ford, Distributed Distance Vector, OSPF Link-State, and FAMM-RS on current topology.
             </p>
           </div>
 

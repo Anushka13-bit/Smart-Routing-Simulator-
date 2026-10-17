@@ -140,6 +140,7 @@ export const RouteExplorerView: React.FC<RouteExplorerViewProps> = ({
               <option value="bellman-ford">Bellman-Ford Algorithm</option>
               <option value="distance-vector">Distance Vector (Distributed)</option>
               <option value="link-state">Link State Protocol (OSPF)</option>
+              <option value="proposed-famm-rs">FAMM-RS (Proposed Multi-Metric & Hysteresis)</option>
             </select>
           </div>
         </div>
@@ -243,6 +244,64 @@ export const RouteExplorerView: React.FC<RouteExplorerViewProps> = ({
                   <span className="text-xl font-bold font-mono text-purple-400">{currentRoute.convergenceRounds}</span>
                 </div>
               </div>
+
+              {/* FAMM-RS Research Metrics Strip if present */}
+              {(currentRoute.stabilityAction || currentRoute.linkBreakdowns) && (
+                <div className="mt-4 p-4 rounded-xl bg-slate-950/70 border border-cyan-800/60">
+                  <div className="flex flex-wrap items-center justify-between gap-2 mb-3">
+                    <div className="flex items-center gap-2">
+                      <span className="text-xs font-mono font-bold text-cyan-400 uppercase tracking-wider">
+                        FAMM-RS Multi-Metric & Stability Analysis
+                      </span>
+                      {currentRoute.stabilityAction && (
+                        <span className={`text-[10px] font-mono px-2 py-0.5 rounded-full font-bold uppercase ${
+                          currentRoute.stabilityAction === 'EMERGENCY_FAILOVER'
+                            ? 'bg-amber-500/20 text-amber-300 border border-amber-600'
+                            : currentRoute.stabilityAction === 'SIGNIFICANT_IMPROVEMENT_SWITCH'
+                            ? 'bg-emerald-500/20 text-emerald-300 border border-emerald-600'
+                            : 'bg-blue-500/20 text-blue-300 border border-blue-600'
+                        }`}>
+                          {currentRoute.stabilityAction.replace(/_/g, ' ')}
+                        </span>
+                      )}
+                    </div>
+                    {currentRoute.switchReason && (
+                      <span className="text-xs text-slate-400 font-mono italic">
+                        {currentRoute.switchReason}
+                      </span>
+                    )}
+                  </div>
+
+                  {currentRoute.linkBreakdowns && currentRoute.linkBreakdowns.length > 0 && (
+                    <div className="overflow-x-auto">
+                      <table className="w-full text-left text-xs font-mono text-slate-300">
+                        <thead className="bg-slate-900 text-[10px] text-slate-400 uppercase">
+                          <tr>
+                            <th className="py-1.5 px-2">Link</th>
+                            <th className="py-1.5 px-2">Bandwidth Penalty</th>
+                            <th className="py-1.5 px-2">Delay Penalty</th>
+                            <th className="py-1.5 px-2">Congestion Penalty</th>
+                            <th className="py-1.5 px-2">Risk Penalty</th>
+                            <th className="py-1.5 px-2 text-right">Composite Cost</th>
+                          </tr>
+                        </thead>
+                        <tbody className="divide-y divide-slate-800/60">
+                          {currentRoute.linkBreakdowns.map((bd, i) => (
+                            <tr key={i} className="hover:bg-slate-900/40">
+                              <td className="py-1 px-2 font-bold text-cyan-300">{bd.link_id}</td>
+                              <td className="py-1 px-2 text-emerald-400">{(bd.weight_bw * bd.bandwidth_penalty).toFixed(3)}</td>
+                              <td className="py-1 px-2 text-amber-400">{(bd.weight_delay * bd.delay_penalty).toFixed(3)}</td>
+                              <td className="py-1 px-2 text-rose-400">{(bd.weight_congestion * bd.congestion_penalty).toFixed(3)}</td>
+                              <td className="py-1 px-2 text-purple-400">{(bd.weight_risk * bd.risk_penalty).toFixed(3)}</td>
+                              <td className="py-1 px-2 text-right font-bold text-white">{bd.total_cost.toFixed(4)}</td>
+                            </tr>
+                          ))}
+                        </tbody>
+                      </table>
+                    </div>
+                  )}
+                </div>
+              )}
             </div>
           ) : (
             <div className="mt-4 p-4 rounded-xl bg-rose-950/30 border border-rose-900/60 text-xs text-rose-300 font-mono">

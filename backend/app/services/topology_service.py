@@ -52,6 +52,7 @@ def _compute_link_cost(link_data: dict) -> float:
         bandwidth_mbps=link_data["bandwidthMbps"],
         delay_ms=link_data["delayMs"],
         congestion_percent=link_data["congestionPercent"],
+        simulated_failure_risk=link_data.get("simulatedFailureRisk", 0.0),
     )
 
 
@@ -146,8 +147,9 @@ def update_link_metrics(
     bandwidth_mbps: Optional[float] = None,
     delay_ms: Optional[float] = None,
     congestion_percent: Optional[float] = None,
+    simulated_failure_risk: Optional[float] = None,
 ) -> Optional[NetworkLink]:
-    """Apply metric updates and recalculate derived cost.  Returns updated link."""
+    """Apply metric updates and recalculate derived cost. Returns updated link."""
     with _lock:
         for lk in _links:
             if lk.id == link_id:
@@ -157,13 +159,18 @@ def update_link_metrics(
                     lk.delayMs = delay_ms
                 if congestion_percent is not None:
                     lk.congestionPercent = congestion_percent
+                if simulated_failure_risk is not None:
+                    lk.simulatedFailureRisk = simulated_failure_risk
                 # If caller explicitly sets cost, respect it;
                 # otherwise recompute from the formula.
                 if cost is not None:
                     lk.cost = cost
                 else:
                     lk.cost = calculate_cost(
-                        lk.bandwidthMbps, lk.delayMs, lk.congestionPercent
+                        lk.bandwidthMbps,
+                        lk.delayMs,
+                        lk.congestionPercent,
+                        simulated_failure_risk=lk.simulatedFailureRisk,
                     )
                 return copy.deepcopy(lk)
     return None

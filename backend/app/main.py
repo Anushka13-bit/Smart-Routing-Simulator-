@@ -8,16 +8,17 @@ import os
 from fastapi import FastAPI
 from fastapi.middleware.cors import CORSMiddleware
 
-from app.api import comparison, links, routes, routing_tables, topology
+from app.api import comparison, links, resilience, routes, routing_tables, topology
 
 app = FastAPI(
     title="Smart Routing Simulator API",
     description=(
         "Backend REST API for comparing computer network routing algorithms "
         "(Dijkstra, Bellman-Ford, Distance Vector, and Link State) on a 5-node topology. "
-        "Supports dynamic link failures, real-time metric modification, and routing table inspection."
+        "Supports dynamic link failures, real-time metric modification, routing table inspection, "
+        "and proposed failure-aware multi-metric routing with route-stability hysteresis (FAMM-RS)."
     ),
-    version="1.0.0",
+    version="2.0.0",
     docs_url="/docs",
     redoc_url="/redoc",
 )
@@ -49,6 +50,7 @@ app.include_router(topology.router, prefix="/api")
 app.include_router(links.router, prefix="/api")
 app.include_router(comparison.router, prefix="/api")
 app.include_router(routing_tables.router, prefix="/api")
+app.include_router(resilience.router, prefix="/api")
 
 
 @app.get("/")

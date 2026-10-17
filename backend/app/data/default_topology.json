@@ -81,7 +81,8 @@
       "bandwidthMbps": 1000,
       "delayMs": 5,
       "congestionPercent": 18,
-      "status": "active"
+      "status": "active",
+      "simulatedFailureRisk": 0.05
     },
     {
       "id": "R2-R3",
@@ -90,7 +91,8 @@
       "bandwidthMbps": 1000,
       "delayMs": 3,
       "congestionPercent": 12,
-      "status": "active"
+      "status": "active",
+      "simulatedFailureRisk": 0.05
     },
     {
       "id": "R1-R3",
@@ -99,7 +101,8 @@
       "bandwidthMbps": 1000,
       "delayMs": 4,
       "congestionPercent": 25,
-      "status": "active"
+      "status": "active",
+      "simulatedFailureRisk": 0.15
     },
     {
       "id": "R1-R4",
@@ -108,7 +111,8 @@
       "bandwidthMbps": 500,
       "delayMs": 10,
       "congestionPercent": 8,
-      "status": "active"
+      "status": "active",
+      "simulatedFailureRisk": 0.08
     },
     {
       "id": "R4-R5",
@@ -117,7 +121,8 @@
       "bandwidthMbps": 500,
       "delayMs": 6,
       "congestionPercent": 10,
-      "status": "active"
+      "status": "active",
+      "simulatedFailureRisk": 0.08
     },
     {
       "id": "R3-R5",
@@ -126,7 +131,8 @@
       "bandwidthMbps": 1000,
       "delayMs": 8,
       "congestionPercent": 22,
-      "status": "active"
+      "status": "active",
+      "simulatedFailureRisk": 0.20
     }
   ]
 }

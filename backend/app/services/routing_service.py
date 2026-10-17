@@ -10,6 +10,7 @@ from app.algorithms.bellman_ford import run_bellman_ford
 from app.algorithms.dijkstra import run_dijkstra
 from app.algorithms.distance_vector import run_distance_vector
 from app.algorithms.link_state import run_link_state
+from app.algorithms.proposed_policy import run_proposed_policy
 from app.models.schemas import (
     AlgorithmComparisonResult,
     AlgorithmType,
@@ -52,6 +53,13 @@ ALGORITHM_METADATA: dict[AlgorithmType, dict[str, str]] = {
         "protocolBasis": "OSPF RFC 2328 Standard",
         "keyFeature": "Reliable LSA flooding creates identical LSDB; each router runs SPF locally.",
     },
+    AlgorithmType.PROPOSED_POLICY: {
+        "name": "Proposed Policy (FAMM-RS)",
+        "timeComplexity": "O((V + E) log V)",
+        "spaceComplexity": "O(V + E)",
+        "protocolBasis": "Multi-Metric Resilience & Route Stability",
+        "keyFeature": "Multi-metric composite score (delay, congestion, bw, risk) with failure awareness and hysteresis route stability.",
+    },
 }
 
 
@@ -70,6 +78,8 @@ def calculate_route(
         return run_distance_vector(source, destination, links)
     elif algorithm == AlgorithmType.LINK_STATE:
         return run_link_state(source, destination, links)
+    elif algorithm == AlgorithmType.PROPOSED_POLICY:
+        return run_proposed_policy(source, destination, links)
     else:
         raise ValueError(f"Unsupported algorithm: {algorithm}")
 
@@ -78,16 +88,21 @@ def compare_algorithms(
     source: RouterId,
     destination: RouterId,
     links: list[NetworkLink],
+    include_proposed: bool = False,
 ) -> list[AlgorithmComparisonResult]:
-    """Execute all four algorithms on the exact same topology snapshot."""
+    """Execute algorithms on the exact same topology snapshot."""
     results: list[AlgorithmComparisonResult] = []
 
-    for algo in [
+    algos = [
         AlgorithmType.DIJKSTRA,
         AlgorithmType.BELLMAN_FORD,
         AlgorithmType.DISTANCE_VECTOR,
         AlgorithmType.LINK_STATE,
-    ]:
+    ]
+    if include_proposed:
+        algos.append(AlgorithmType.PROPOSED_POLICY)
+
+    for algo in algos:
         res = calculate_route(algo, source, destination, links)
         meta = ALGORITHM_METADATA[algo]
 

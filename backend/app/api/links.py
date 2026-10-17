@@ -96,13 +96,14 @@ def update_metrics_put(
     link_id: str,
     updates: UpdateLinkMetricsRequest,
 ):
-    """Update link metrics (bandwidth, delay, congestion) via PUT (frontend contract)."""
+    """Update link metrics (bandwidth, delay, congestion, simulated risk) via PUT (frontend contract)."""
     updated = topology_service.update_link_metrics(
         link_id=link_id,
         cost=updates.cost,
         bandwidth_mbps=updates.bandwidthMbps,
         delay_ms=updates.delayMs,
         congestion_percent=updates.congestionPercent,
+        simulated_failure_risk=updates.simulatedFailureRisk,
     )
     if not updated:
         raise HTTPException(status_code=404, detail=f"Link '{link_id}' not found.")
@@ -121,6 +122,7 @@ def update_metrics_patch(
         bandwidth_mbps=updates.bandwidthMbps,
         delay_ms=updates.delayMs,
         congestion_percent=updates.congestionPercent,
+        simulated_failure_risk=updates.simulatedFailureRisk,
     )
     if not updated:
         raise HTTPException(status_code=404, detail=f"Link '{link_id}' not found.")

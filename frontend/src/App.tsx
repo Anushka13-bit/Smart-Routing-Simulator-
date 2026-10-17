@@ -9,6 +9,7 @@ import { FailureSimulationView } from './components/simulation/FailureSimulation
 import { LinkMetricsView } from './components/metrics/LinkMetricsView';
 import { ExperimentHistoryView } from './components/history/ExperimentHistoryView';
 import { AlgorithmTheoryModal } from './components/modals/AlgorithmTheoryModal';
+import { ResilienceView } from './components/resilience/ResilienceView';
 import { ToastContainer, type ToastMessage } from './components/common/Toast';
 import { INITIAL_ROUTERS, INITIAL_LINKS } from './services/mockData';
 import {
@@ -16,6 +17,7 @@ import {
   runBellmanFord,
   runDistanceVector,
   runLinkState,
+  runProposedPolicy,
 } from './services/routingEngine';
 import { NetworkApiService } from './services/api';
 import type {
@@ -273,6 +275,8 @@ export const App: React.FC = () => {
         result = runBellmanFord(src, dst, links, routers);
       } else if (algo === 'distance-vector') {
         result = runDistanceVector(src, dst, links, routers);
+      } else if (algo === 'proposed-famm-rs') {
+        result = runProposedPolicy(src, dst, links, routers);
       } else {
         result = runLinkState(src, dst, links, routers);
       }
@@ -595,6 +599,15 @@ export const App: React.FC = () => {
             selectedDestination={selectedDestination}
             setSelectedSource={setSelectedSource}
             setSelectedDestination={setSelectedDestination}
+          />
+        )}
+
+        {activeTab === 'resilience' && (
+          <ResilienceView
+            links={links}
+            isApiMode={isApiMode}
+            backendOnline={backendOnline}
+            addToast={addToast}
           />
         )}
 
