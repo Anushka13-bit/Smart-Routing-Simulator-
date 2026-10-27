@@ -6,10 +6,7 @@ import {
   AlertOctagon,
   CheckCircle2,
   AlertTriangle,
-  ArrowRight,
-  ShieldAlert,
   Activity,
-  Sparkles,
 } from 'lucide-react';
 import type {
   RouterId,
@@ -27,8 +24,8 @@ interface FailureSimulationViewProps {
   selectedSource: RouterId;
   selectedDestination: RouterId;
   selectedAlgorithm?: RoutingAlgorithmType;
-  onToggleLinkFail: (linkId: string) => void;
-  onSetBulkLinkStatus: (failedLinkIds: string[]) => void;
+  onToggleLinkFail?: (linkId: string) => void;
+  onSetBulkLinkStatus?: (failedLinkIds: string[]) => void;
   onResetAllLinks: () => void;
 }
 
@@ -39,8 +36,8 @@ export const FailureSimulationView: React.FC<FailureSimulationViewProps> = ({
   selectedSource,
   selectedDestination,
   selectedAlgorithm: _selectedAlgorithm,
-  onToggleLinkFail,
-  onSetBulkLinkStatus,
+  onToggleLinkFail: _onToggleLinkFail,
+  onSetBulkLinkStatus: _onSetBulkLinkStatus,
   onResetAllLinks,
 }) => {
   // Baseline route when ALL links are active
@@ -55,50 +52,6 @@ export const FailureSimulationView: React.FC<FailureSimulationViewProps> = ({
   }, [selectedSource, selectedDestination, links, routers]);
 
   const failedLinks = links.filter((l) => l.status === 'failed');
-
-  // Pre-configured test scenarios
-  const scenarios = [
-    {
-      id: 'all-healthy',
-      title: 'Optimal Baseline (All Links UP)',
-      description: 'All 6 links fully active. Standard optimal shortest path is used.',
-      failedIds: [],
-      badge: 'HEALTHY',
-      badgeColor: 'text-emerald-400 bg-emerald-950 border-emerald-800',
-    },
-    {
-      id: 'backbone-cut',
-      title: 'Backbone Link Cut (R3–R5 Down)',
-      description: 'Primary link to destination router R5 breaks. Forces reroute via transit router R4 (R1 ➔ R4 ➔ R5).',
-      failedIds: ['R3-R5'],
-      badge: 'CRITICAL REROUTE',
-      badgeColor: 'text-amber-400 bg-amber-950 border-amber-800',
-    },
-    {
-      id: 'gateway-cut',
-      title: 'Ingress Link Cut (R1–R3 Down)',
-      description: 'Core ingress link severed. Algorithm evaluates alternate path via secondary bypass R4.',
-      failedIds: ['R1-R3'],
-      badge: 'BYPASS TEST',
-      badgeColor: 'text-cyan-400 bg-cyan-950 border-cyan-800',
-    },
-    {
-      id: 'partition',
-      title: 'Total Network Partition (R3–R5 & R4–R5 Down)',
-      description: 'Both ingress paths into R5 are severed. Destination becomes completely unreachable (cost = ∞).',
-      failedIds: ['R3-R5', 'R4-R5'],
-      badge: 'BLACK HOLE / PARTITION',
-      badgeColor: 'text-rose-400 bg-rose-950 border-rose-800',
-    },
-    {
-      id: 'secondary-cut',
-      title: 'Redundancy Loss (R1–R4 Down)',
-      description: 'Backup link down; primary path remains active but failover resilience is eliminated.',
-      failedIds: ['R1-R4'],
-      badge: 'REDUNDANCY LOSS',
-      badgeColor: 'text-purple-400 bg-purple-950 border-purple-800',
-    },
-  ];
 
   return (
     <div className="space-y-6">
@@ -230,130 +183,6 @@ export const FailureSimulationView: React.FC<FailureSimulationViewProps> = ({
         </div>
       </div>
 
-      {/* Preset Scenarios Gallery */}
-      <div className="bg-slate-900/90 rounded-2xl border border-slate-800 p-6 backdrop-blur-md shadow-xl">
-        <div className="flex items-center gap-2 mb-4">
-          <Sparkles className="w-5 h-5 text-amber-400" />
-          <h3 className="font-bold text-base text-white">Curated Test Scenarios & Disaster Simulations</h3>
-        </div>
-
-        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
-          {scenarios.map((scenario) => {
-            const isCurrentlySelected =
-              scenario.failedIds.length === failedLinks.length &&
-              scenario.failedIds.every((id) => failedLinks.some((l) => l.id === id));
-
-            return (
-              <div
-                key={scenario.id}
-                className={`p-4 rounded-xl border transition-all flex flex-col justify-between ${
-                  isCurrentlySelected
-                    ? 'bg-cyan-950/30 border-cyan-500/60 shadow-glow-cyan/20'
-                    : 'bg-slate-950/60 border-slate-800 hover:border-slate-700'
-                }`}
-              >
-                <div>
-                  <div className="flex items-center justify-between mb-2">
-                    <span className={`text-[10px] font-mono px-2 py-0.5 rounded border ${scenario.badgeColor}`}>
-                      {scenario.badge}
-                    </span>
-                    {isCurrentlySelected && (
-                      <span className="text-[10px] font-mono text-cyan-400 font-bold">CURRENT</span>
-                    )}
-                  </div>
-                  <h4 className="font-bold text-sm text-white">{scenario.title}</h4>
-                  <p className="text-xs text-slate-400 mt-1 leading-snug">{scenario.description}</p>
-                </div>
-
-                <div className="mt-4 pt-3 border-t border-slate-800/80">
-                  <button
-                    onClick={() => onSetBulkLinkStatus(scenario.failedIds)}
-                    className="w-full py-2 px-3 rounded-lg bg-slate-800 hover:bg-slate-700 text-cyan-300 font-mono text-xs font-semibold transition-colors flex items-center justify-center gap-1.5"
-                  >
-                    <span>Load Scenario</span>
-                    <ArrowRight className="w-3.5 h-3.5" />
-                  </button>
-                </div>
-              </div>
-            );
-          })}
-        </div>
-      </div>
-
-      {/* Interactive Individual Link Toggles */}
-      <div className="bg-slate-900/90 rounded-2xl border border-slate-800 p-6 backdrop-blur-md shadow-xl">
-        <h3 className="font-bold text-base text-white mb-4 flex items-center gap-2">
-          <ShieldAlert className="w-5 h-5 text-cyan-400" />
-          <span>Manual Link Fault Injection Matrix</span>
-        </h3>
-
-        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4">
-          {links.map((link) => {
-            const isFailed = link.status === 'failed';
-
-            return (
-              <div
-                key={link.id}
-                className={`p-4 rounded-xl border transition-all ${
-                  isFailed
-                    ? 'bg-rose-950/30 border-rose-500/50 shadow-glow-rose/10'
-                    : 'bg-slate-950/60 border-slate-800'
-                }`}
-              >
-                <div className="flex items-center justify-between">
-                  <div className="font-mono font-bold text-base text-white flex items-center gap-2">
-                    <span>{link.id}</span>
-                    <span className="text-xs text-slate-400">({link.source} ⟷ {link.target})</span>
-                  </div>
-                  <span className={`text-[10px] font-mono px-2 py-0.5 rounded font-bold ${
-                    isFailed ? 'bg-rose-500/20 text-rose-300 border border-rose-500/40' : 'bg-emerald-500/20 text-emerald-400 border border-emerald-500/40'
-                  }`}>
-                    {isFailed ? 'FAILED' : 'ACTIVE'}
-                  </span>
-                </div>
-
-                <div className="mt-3 text-xs font-mono text-slate-400 space-y-1">
-                  <div className="flex justify-between">
-                    <span>Cost:</span>
-                    <span className="text-cyan-400">{link.cost}</span>
-                  </div>
-                  <div className="flex justify-between">
-                    <span>Delay:</span>
-                    <span className="text-amber-300">{link.delayMs} ms</span>
-                  </div>
-                  <div className="flex justify-between">
-                    <span>Bandwidth:</span>
-                    <span className="text-slate-300">{link.bandwidthMbps} Mbps</span>
-                  </div>
-                </div>
-
-                <div className="mt-4 pt-3 border-t border-slate-800">
-                  <button
-                    onClick={() => onToggleLinkFail(link.id)}
-                    className={`w-full py-2 px-3 rounded-lg text-xs font-mono font-bold transition-all flex items-center justify-center gap-1.5 ${
-                      isFailed
-                        ? 'bg-emerald-600 hover:bg-emerald-500 text-white'
-                        : 'bg-rose-600/80 hover:bg-rose-500 text-white'
-                    }`}
-                  >
-                    {isFailed ? (
-                      <>
-                        <RotateCcw className="w-3.5 h-3.5" />
-                        <span>Restore Link</span>
-                      </>
-                    ) : (
-                      <>
-                        <Flame className="w-3.5 h-3.5" />
-                        <span>Trigger Link Cut</span>
-                      </>
-                    )}
-                  </button>
-                </div>
-              </div>
-            );
-          })}
-        </div>
-      </div>
     </div>
   );
 };

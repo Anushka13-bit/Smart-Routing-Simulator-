@@ -1,21 +1,9 @@
 // src/components/comparison/AlgorithmComparisonView.tsx
 import React, { useMemo } from 'react';
 import {
-  BarChart,
-  Bar,
-  XAxis,
-  YAxis,
-  Tooltip,
-  ResponsiveContainer,
-  Cell,
-} from 'recharts';
-import {
   Zap,
   AlertTriangle,
-  Clock,
-  Layers,
   Scale,
-  Cpu,
 } from 'lucide-react';
 import type {
   RouterId,
@@ -46,18 +34,7 @@ export const AlgorithmComparisonView: React.FC<AlgorithmComparisonViewProps> = (
     return compareAllAlgorithms(selectedSource, selectedDestination, links, routers);
   }, [selectedSource, selectedDestination, links, routers]);
 
-  // Prepare chart datasets
-  const executionChartData = comparisonResults.map((res) => ({
-    name: res.name.split(' ')[0],
-    fullName: res.name,
-    executionTimeMs: res.executionTimeMs,
-    totalCost: res.totalCost === Infinity ? 0 : res.totalCost,
-    hops: res.totalHops,
-    messages: res.messagesExchanged,
-    rounds: res.convergenceRounds,
-  }));
-
-  const chartColors = ['#06B6D4', '#3B82F6', '#8B5CF6', '#10B981', '#F59E0B'];
+  const chartColors = ['#06B6D4', '#3B82F6', '#8B5CF6', '#10B981'];
 
   return (
     <div className="space-y-6">
@@ -70,7 +47,7 @@ export const AlgorithmComparisonView: React.FC<AlgorithmComparisonViewProps> = (
               <h2 className="text-xl font-bold text-white">Multi-Algorithm Benchmark & Comparison</h2>
             </div>
             <p className="text-xs text-slate-400 mt-1">
-              Simultaneous evaluation of Dijkstra, Bellman-Ford, Distributed Distance Vector, OSPF Link-State, and FAMM-RS on current topology.
+              Simultaneous evaluation of Dijkstra, Bellman-Ford, Distributed Distance Vector, and OSPF Link-State on current topology.
             </p>
           </div>
 
@@ -182,10 +159,6 @@ export const AlgorithmComparisonView: React.FC<AlgorithmComparisonViewProps> = (
                     <span className="text-slate-400">Convergence Passes:</span>
                     <span className="text-purple-400 font-bold">{item.convergenceRounds}</span>
                   </div>
-                  <div className="flex justify-between py-1 border-b border-slate-800/60">
-                    <span className="text-slate-400">Message Overhead:</span>
-                    <span className="text-slate-300 font-bold">{item.messagesExchanged} packets</span>
-                  </div>
                 </div>
 
                 {/* Complexities */}
@@ -210,137 +183,6 @@ export const AlgorithmComparisonView: React.FC<AlgorithmComparisonViewProps> = (
         })}
       </div>
 
-      {/* Visual Recharts Section */}
-      <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
-        {/* Chart 1: Compute Execution Latency (ms) */}
-        <div className="bg-slate-900/90 rounded-2xl border border-slate-800 p-6 backdrop-blur-md shadow-xl">
-          <div className="flex items-center justify-between pb-4 border-b border-slate-800">
-            <div className="flex items-center gap-2">
-              <Clock className="w-5 h-5 text-cyan-400" />
-              <h3 className="font-bold text-sm text-white">Execution Time Comparison (ms)</h3>
-            </div>
-            <span className="text-[10px] font-mono text-slate-400">Lower is faster</span>
-          </div>
-
-          <div className="mt-4 h-64 w-full">
-            <ResponsiveContainer width="100%" height="100%">
-              <BarChart data={executionChartData} margin={{ top: 10, right: 10, left: -20, bottom: 20 }}>
-                <XAxis dataKey="name" stroke="#64748B" fontSize={11} fontFamily="monospace" />
-                <YAxis stroke="#64748B" fontSize={11} fontFamily="monospace" unit="ms" />
-                <Tooltip
-                  contentStyle={{
-                    backgroundColor: '#0F172A',
-                    borderColor: '#334155',
-                    borderRadius: '8px',
-                    fontFamily: 'monospace',
-                    fontSize: '12px',
-                    color: '#E2E8F0',
-                  }}
-                />
-                <Bar dataKey="executionTimeMs" name="Execution Time (ms)" radius={[6, 6, 0, 0]}>
-                  {executionChartData.map((_, index) => (
-                    <Cell key={`cell-${index}`} fill={chartColors[index % chartColors.length]} />
-                  ))}
-                </Bar>
-              </BarChart>
-            </ResponsiveContainer>
-          </div>
-        </div>
-
-        {/* Chart 2: Protocol Message / Packet Overhead */}
-        <div className="bg-slate-900/90 rounded-2xl border border-slate-800 p-6 backdrop-blur-md shadow-xl">
-          <div className="flex items-center justify-between pb-4 border-b border-slate-800">
-            <div className="flex items-center gap-2">
-              <Cpu className="w-5 h-5 text-violet-400" />
-              <h3 className="font-bold text-sm text-white">Protocol Messaging & Packet Overhead</h3>
-            </div>
-            <span className="text-[10px] font-mono text-slate-400">Total Packets Exchanged</span>
-          </div>
-
-          <div className="mt-4 h-64 w-full">
-            <ResponsiveContainer width="100%" height="100%">
-              <BarChart data={executionChartData} margin={{ top: 10, right: 10, left: -20, bottom: 20 }}>
-                <XAxis dataKey="name" stroke="#64748B" fontSize={11} fontFamily="monospace" />
-                <YAxis stroke="#64748B" fontSize={11} fontFamily="monospace" />
-                <Tooltip
-                  contentStyle={{
-                    backgroundColor: '#0F172A',
-                    borderColor: '#334155',
-                    borderRadius: '8px',
-                    fontFamily: 'monospace',
-                    fontSize: '12px',
-                    color: '#E2E8F0',
-                  }}
-                />
-                <Bar dataKey="messages" name="Messages Exchanged" fill="#8B5CF6" radius={[6, 6, 0, 0]}>
-                  {executionChartData.map((_, index) => (
-                    <Cell key={`cell-msg-${index}`} fill={chartColors[index % chartColors.length]} />
-                  ))}
-                </Bar>
-              </BarChart>
-            </ResponsiveContainer>
-          </div>
-        </div>
-      </div>
-
-      {/* Comprehensive Academic Comparison Table */}
-      <div className="bg-slate-900/90 rounded-2xl border border-slate-800 p-6 backdrop-blur-md shadow-xl">
-        <h3 className="font-bold text-sm text-white mb-4 flex items-center gap-2">
-          <Layers className="w-4 h-4 text-cyan-400" />
-          <span>Computer Networks Protocol Trade-offs Matrix</span>
-        </h3>
-
-        <div className="overflow-x-auto">
-          <table className="w-full text-left font-mono text-xs">
-            <thead>
-              <tr className="border-b border-slate-800 text-slate-400 text-[11px] uppercase">
-                <th className="pb-3 pl-2">Attribute</th>
-                <th className="pb-3 text-cyan-400">Dijkstra's SPF</th>
-                <th className="pb-3 text-blue-400">Bellman-Ford</th>
-                <th className="pb-3 text-purple-400">Distance Vector (RIP)</th>
-                <th className="pb-3 text-emerald-400">Link State (OSPF)</th>
-              </tr>
-            </thead>
-            <tbody className="divide-y divide-slate-800/60 text-slate-300">
-              <tr>
-                <td className="py-3 pl-2 font-bold text-white">Algorithm Class</td>
-                <td className="py-3">Greedy Search</td>
-                <td className="py-3">Dynamic Programming</td>
-                <td className="py-3">Decentralized Iterative</td>
-                <td className="py-3">Flooding + Local Dijkstra</td>
-              </tr>
-              <tr>
-                <td className="py-3 pl-2 font-bold text-white">Topology Knowledge</td>
-                <td className="py-3">Complete Global Graph</td>
-                <td className="py-3">Complete Global Graph</td>
-                <td className="py-3">Neighbors Only</td>
-                <td className="py-3">Synchronized LSDB Graph</td>
-              </tr>
-              <tr>
-                <td className="py-3 pl-2 font-bold text-white">Convergence Speed</td>
-                <td className="py-3 text-emerald-400 font-bold">Fastest O(V log V)</td>
-                <td className="py-3 text-amber-400">Moderate O(V × E)</td>
-                <td className="py-3 text-rose-400">Slow (Count to Infinity)</td>
-                <td className="py-3 text-emerald-400 font-bold">Instant upon LSA flood</td>
-              </tr>
-              <tr>
-                <td className="py-3 pl-2 font-bold text-white">Loop Vulnerability</td>
-                <td className="py-3">Loop-free</td>
-                <td className="py-3">Loop-free</td>
-                <td className="py-3 text-rose-400">Subject to transient loops</td>
-                <td className="py-3 text-emerald-400">Loop-free (SPF tree)</td>
-              </tr>
-              <tr>
-                <td className="py-3 pl-2 font-bold text-white">Real-world Protocol</td>
-                <td className="py-3">IS-IS, OSPF Engine</td>
-                <td className="py-3">Theoretical Bellman</td>
-                <td className="py-3">RIPv1, RIPv2, RIPng</td>
-                <td className="py-3">OSPF RFC 2328</td>
-              </tr>
-            </tbody>
-          </table>
-        </div>
-      </div>
     </div>
   );
 };

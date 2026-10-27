@@ -31,7 +31,6 @@ class AlgorithmType(str, Enum):
     BELLMAN_FORD = "bellman-ford"
     DISTANCE_VECTOR = "distance-vector"
     LINK_STATE = "link-state"
-    PROPOSED_POLICY = "proposed-famm-rs"
 
 
 class LinkStatus(str, Enum):
@@ -158,7 +157,7 @@ class StepTrace(BaseModel):
 
 
 class RouteResult(BaseModel):
-    algorithm: AlgorithmType
+    algorithm: AlgorithmType | str
     source: RouterId
     destination: RouterId
     path: list[RouterId]

@@ -221,24 +221,5 @@ export const ALGORITHM_DESCRIPTIONS = {
       "Requires synchronization mechanisms (sequence numbers, aging)",
     ],
   },
-  'proposed-famm-rs': {
-    name: "FAMM-RS (Proposed Multi-Metric)",
-    category: "Resilience-Aware Multi-Objective + Stability Hysteresis",
-    protocol: "FAMM-RS Experimental Framework (OSPF / SDN Extension)",
-    complexity: "O((V + E) log V) with Normalized Cost Function",
-    spaceComplexity: "O(V + E) + Route Cache State",
-    summary: "Failure-Aware Multi-Metric Routing with Route Stability Hysteresis. Combines delay, bandwidth, congestion, and failure risk into a normalized composite metric, with hysteresis dampening (Delta C / C_old > theta) to prevent route flapping.",
-    pros: [
-      "Multi-dimensional QoS optimization: balances delay, bandwidth, congestion, and structural risk",
-      "Hysteresis dampening actively prevents route oscillation and control-plane churn",
-      "Proactive diversion around high-risk and near-saturation links before failure occurs",
-      "Configurable policy weights dynamically adapt to voice, video, or bulk traffic profiles",
-    ],
-    cons: [
-      "Requires periodic multi-metric telemetry dissemination across network nodes",
-      "Tuning hysteresis threshold requires balancing responsiveness against route stability",
-      "Slightly higher per-link cost evaluation overhead compared to hop-count alone",
-    ],
-  },
 };
 

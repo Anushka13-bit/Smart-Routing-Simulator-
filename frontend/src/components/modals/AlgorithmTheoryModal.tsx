@@ -88,29 +88,6 @@ Phase 2: Shortest Path First (SPF) Calculation
     Each node independently runs Dijkstra's algorithm using the LSDB as graph.
     Computes Shortest Path Tree (SPT) rooted at itself.
     Populates forwarding table: Next-Hop for each destination prefix.`,
-    'proposed-famm-rs': `// FAMM-RS: Failure-Aware Multi-Metric Routing with Route Stability Hysteresis
-1. Composite Link Cost Function:
-    c_FAMM(e) = w_bw * (BW_ref / bw(e))
-              + w_delay * (delay(e) / Delay_max)
-              + w_cong * (congestion(e) / 100)^2
-              + w_risk * simulated_risk(e)
-
-2. Optimal Candidate Computation:
-    R_cand = argmin_{P in Paths(S, D)} sum_{e in P} c_FAMM(e)
-
-3. Route-Stability Hysteresis Control:
-    if active_route is None or active_route is broken (link down):
-        active_route = R_cand   // Emergency failover immediate switch
-    else:
-        cost_curr = Cost(active_route)
-        cost_cand = Cost(R_cand)
-        Delta_cost = cost_curr - cost_cand
-        
-        // Switch ONLY if relative improvement exceeds hysteresis threshold theta
-        if (Delta_cost / cost_curr) > theta and Delta_cost >= delta_min:
-            active_route = R_cand   // Significant improvement: switch route
-        else:
-            maintain active_route   // Dampen control-plane flap / oscillation`,
   };
 
   return (
@@ -140,7 +117,7 @@ Phase 2: Shortest Path First (SPF) Calculation
 
         {/* Algorithm Tabs */}
         <div className="flex items-center px-6 pt-4 border-b border-slate-800/80 gap-2 overflow-x-auto bg-slate-950/40">
-          {(['dijkstra', 'bellman-ford', 'distance-vector', 'link-state', 'proposed-famm-rs'] as RoutingAlgorithmType[]).map((algoKey) => (
+          {(['dijkstra', 'bellman-ford', 'distance-vector', 'link-state'] as RoutingAlgorithmType[]).map((algoKey) => (
             <button
               key={algoKey}
               onClick={() => setSelectedAlgo(algoKey)}

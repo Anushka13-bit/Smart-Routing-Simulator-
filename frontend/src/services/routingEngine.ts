@@ -821,7 +821,6 @@ export function compareAllAlgorithms(
   const bellman = runBellmanFord(source, destination, links, routers);
   const dv = runDistanceVector(source, destination, links, routers);
   const ls = runLinkState(source, destination, links, routers);
-  const famm = runProposedPolicy(source, destination, links, routers);
 
   return [
     {
@@ -887,22 +886,6 @@ export function compareAllAlgorithms(
       protocolBasis: 'OSPF RFC 2328 Standard',
       keyFeature: 'Reliable LSA flooding creates identical LSDB; each router runs SPF locally.',
       status: ls.success ? 'success' : 'failed',
-    },
-    {
-      algorithm: 'proposed-famm-rs',
-      name: 'FAMM-RS (Proposed Multi-Metric)',
-      path: famm.path,
-      totalCost: famm.totalCost,
-      totalHops: famm.totalHops,
-      totalDelayMs: famm.totalDelayMs,
-      executionTimeMs: famm.executionTimeMs,
-      convergenceRounds: 1,
-      messagesExchanged: 5,
-      timeComplexity: 'O((V + E) log V)',
-      spaceComplexity: 'O(V + E) + State',
-      protocolBasis: 'Multi-Metric QoS + Hysteresis Engine',
-      keyFeature: 'Jointly optimizes delay, congestion, bandwidth, and risk; hysteresis eliminates route flapping.',
-      status: famm.success ? 'success' : 'failed',
     },
   ];
 }

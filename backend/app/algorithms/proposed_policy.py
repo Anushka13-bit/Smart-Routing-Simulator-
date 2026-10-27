@@ -149,7 +149,7 @@ def run_proposed_policy(
     if source == destination:
         elapsed = (time.perf_counter() - t_start) * 1000
         return RouteResult(
-            algorithm=AlgorithmType.PROPOSED_POLICY,
+            algorithm="proposed-famm-rs",
             source=source,
             destination=destination,
             path=[source],
@@ -267,7 +267,7 @@ def run_proposed_policy(
             )
         )
         return RouteResult(
-            algorithm=AlgorithmType.PROPOSED_POLICY,
+            algorithm="proposed-famm-rs",
             source=source,
             destination=destination,
             path=[],
@@ -357,7 +357,7 @@ def run_proposed_policy(
 
     path_cost = round(dist[destination], 6)
     return RouteResult(
-        algorithm=AlgorithmType.PROPOSED_POLICY,
+        algorithm="proposed-famm-rs",
         source=source,
         destination=destination,
         path=path,

@@ -2,7 +2,7 @@
 
 export type RouterId = 'R1' | 'R2' | 'R3' | 'R4' | 'R5';
 
-export type RoutingAlgorithmType = 'dijkstra' | 'bellman-ford' | 'distance-vector' | 'link-state' | 'proposed-famm-rs';
+export type RoutingAlgorithmType = 'dijkstra' | 'bellman-ford' | 'distance-vector' | 'link-state';
 
 export interface RouterNodeData {
   id: RouterId;
@@ -57,7 +57,7 @@ export interface StepTrace {
 }
 
 export interface RouteResult {
-  algorithm: RoutingAlgorithmType;
+  algorithm: RoutingAlgorithmType | string;
   source: RouterId;
   destination: RouterId;
   path: RouterId[];

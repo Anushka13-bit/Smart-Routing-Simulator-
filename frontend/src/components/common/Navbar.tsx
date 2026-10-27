@@ -13,7 +13,6 @@ import {
   Gauge,
   History,
   LayoutDashboard,
-  FlaskConical,
 } from 'lucide-react';
 
 export type ActiveTab =
@@ -21,7 +20,6 @@ export type ActiveTab =
   | 'topology'
   | 'explorer'
   | 'comparison'
-  | 'resilience'
   | 'failure'
   | 'metrics'
   | 'history';
@@ -56,7 +54,6 @@ export const Navbar: React.FC<NavbarProps> = ({
     { id: 'topology', label: 'Network Topology', icon: Network },
     { id: 'explorer', label: 'Route Explorer', icon: GitBranch },
     { id: 'comparison', label: 'Compare Algorithms', icon: BarChart3 },
-    { id: 'resilience', label: 'Resilience & Research', icon: FlaskConical },
     { id: 'failure', label: 'Failure Simulation', icon: Flame },
     { id: 'metrics', label: 'Link Metrics', icon: Gauge },
     { id: 'history', label: 'History & Logs', icon: History },
