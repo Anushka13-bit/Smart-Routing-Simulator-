@@ -43,7 +43,7 @@ export const LinkMetricsView: React.FC<LinkMetricsViewProps> = ({
     {
       id: 'congested-r3',
       name: 'Heavy Congestion on R1-R3',
-      desc: 'Simulates peak load on primary link R1-R3: metric weight increased to 12, congestion to 92%, delay to 35ms.',
+      desc: 'Simulates peak load on primary link R1-R3: metric weight increased to 12, delay to 35ms.',
       apply: () => {
         onUpdateMetric('R1-R3', { cost: 12, delayMs: 35, congestionPercent: 92 });
       },
@@ -78,7 +78,7 @@ export const LinkMetricsView: React.FC<LinkMetricsViewProps> = ({
               <h2 className="text-xl font-bold text-white">Link Metrics & QoS Parameter Tuning</h2>
             </div>
             <p className="text-xs text-slate-400 mt-1">
-              Adjust metric costs, delay, bandwidth, and buffer congestion. Observe how dynamic cost calculations steer packets.
+              Adjust metric costs, delay, and bandwidth. Observe how dynamic cost calculations steer packets.
             </p>
           </div>
 
@@ -242,29 +242,6 @@ export const LinkMetricsView: React.FC<LinkMetricsViewProps> = ({
                     <option value={1000}>1000 Mbps / 1 Gbps (GigabitEthernet)</option>
                     <option value={10000}>10,000 Mbps / 10 Gbps (TenGig Fiber)</option>
                   </select>
-                </div>
-
-                {/* 4. Congestion Slider */}
-                <div>
-                  <div className="flex justify-between items-center mb-1">
-                    <label className="text-slate-400">Queue Congestion:</label>
-                    <span className={`font-bold text-sm ${link.congestionPercent > 70 ? 'text-rose-400' : 'text-slate-300'}`}>
-                      {link.congestionPercent}%
-                    </span>
-                  </div>
-                  <input
-                    type="range"
-                    min="0"
-                    max="100"
-                    step="5"
-                    value={link.congestionPercent}
-                    onChange={(e) => onUpdateMetric(link.id, { congestionPercent: parseInt(e.target.value) })}
-                    className="w-full accent-purple-400 cursor-pointer"
-                  />
-                  <div className="flex justify-between text-[10px] text-slate-600 mt-0.5">
-                    <span>0% (Idle)</span>
-                    <span>100% (Saturated)</span>
-                  </div>
                 </div>
               </div>
             </div>
